@@ -14,6 +14,11 @@
             >
           </li>
           <li class="nav-item active">
+            <router-link to="/admin/coupons" class="nav-link"
+              >優惠券列表</router-link
+            >
+          </li>
+          <li class="nav-item active">
             <router-link to="/products" class="nav-link">返回前台</router-link>
           </li>
         </ul>

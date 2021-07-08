@@ -106,7 +106,6 @@ export default {
             this.products = res.data.products
             this.pagination = res.data.pagination
             this.isLoading = false
-            console.log(res)
           } else {
             console.log(res.data.message)
           }

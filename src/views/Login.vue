@@ -62,7 +62,6 @@ export default {
         .post(url, this.user)
         .then(res => {
           if (res.data.success) {
-            console.log(res)
             const { token, expired } = res.data
             document.cookie = `hexToken=${token};expires=${new Date(expired)};`
             swal({

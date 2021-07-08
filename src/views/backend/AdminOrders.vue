@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <Loading :active="isLoading"></Loading>
     <div class="text-end mt-3">
       <button type="button" class="btn btn-outline-danger" @click="delOrders">
         刪除全部訂單
@@ -60,6 +61,11 @@
             </td>
           </tr>
         </template>
+        <template v-else>
+          <tr>
+            <td colspan="8" class="text-center">目前無任何訂單</td>
+          </tr>
+        </template>
       </tbody>
     </table>
     <OrderModal
@@ -68,7 +74,7 @@
       @update-order-paid="updateOrderPaid"
     ></OrderModal>
     <DelModal :order="tempOrder" ref="delModal" @del-item="delOrder"></DelModal>
-    <Pagination :pages="pagination" @emitPages="getOrders"></Pagination>
+    <Pagination :pages="pagination" @update-page="getOrders"></Pagination>
   </div>
 </template>
 
@@ -82,7 +88,10 @@ export default {
   data () {
     return {
       orders: [],
-      tempOrder: {}
+      tempOrder: {},
+      pagination: {},
+      currentPage: 1,
+      isLoading: false
     }
   },
   components: {
@@ -92,12 +101,15 @@ export default {
   },
   methods: {
     getOrders (page = 1) {
+      this.isLoading = true
+      this.currentPage = page
       const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`
       this.$http(url)
         .then(res => {
           if (res.data.success) {
+            this.pagination = res.data.pagination
             this.orders = res.data.orders
-            console.log(this.orders)
+            this.isLoading = false
           } else {
             console.log(res)
           }
@@ -125,7 +137,7 @@ export default {
             timer: 1000
           })
           orderComponent.closeModal()
-          this.getOrders()
+          this.getOrders(this.currentPage)
         } else {
           console.log(res.data.message)
         }
@@ -153,7 +165,7 @@ export default {
             timer: 1000
           })
           delComponent.closeModal()
-          this.getOrders()
+          this.getOrders(this.currentPage)
         }
       })
     },
