@@ -86,19 +86,7 @@ export default {
         .catch(err => {
           console.log(err)
         })
-    },
-    checkLogin () {
-      const token = document.cookie.replace(
-        /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
-        '$1'
-      )
-      if (token) {
-        this.$router.push('../admin')
-      }
     }
-  },
-  mounted () {
-    this.checkLogin()
   }
 }
 </script>

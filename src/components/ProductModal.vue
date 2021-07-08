@@ -220,7 +220,7 @@ export default {
       type: Boolean,
       default: false
     },
-    page: {
+    pages: {
       type: Object,
       default () {
         return {}
@@ -250,7 +250,7 @@ export default {
   },
   methods: {
     updateProduct () {
-      this.$emit('update-product', this.tempProduct)
+      this.$emit('update-product', this.tempProduct, this.pages)
     },
     addImages () {
       this.tempProduct.imagesUrl = []

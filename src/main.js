@@ -10,6 +10,7 @@ import rules from '@vee-validate/rules'
 import { localize, setLocale } from '@vee-validate/i18n'
 // 匯入繁體中文語系檔案
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
+import { date, currency } from './methods/filters'
 import App from './App.vue'
 import router from './router'
 
@@ -26,6 +27,12 @@ configure({
 setLocale('zh_TW')
 
 const app = createApp(App)
+
+app.config.globalProperties.$filters = {
+  date,
+  currency
+}
+
 app.use(router)
 app.use(VueAxios, axios)
 app.component('Loading', VueLoading)

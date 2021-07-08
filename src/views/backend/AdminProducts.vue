@@ -28,8 +28,8 @@
           </td>
           <td>{{ item.category }}</td>
           <td>{{ item.title }}</td>
-          <td>{{ item.origin_price }}</td>
-          <td>{{ item.price }}</td>
+          <td>{{ $filters.currency(item.origin_price) }}</td>
+          <td>{{ $filters.currency(item.price) }}</td>
           <td>
             <span v-if="item.is_enabled" class="text-success">啟用</span>
             <span v-else class="text-danger">未啟用</span>
@@ -55,24 +55,27 @@
         </tr>
       </tbody>
     </table>
+    <Pagination :pages="pagination" @update-page="getProducts"></Pagination>
+    <!-- Modal元件 -->
+    <ProductModal
+      :pages="pagination"
+      :product="tempProduct"
+      :isNew="isNew"
+      @update-product="updateProduct"
+      ref="productModal"
+    >
+    </ProductModal>
+    <DelModal :product="tempProduct" @del-item="deleteProduct" ref="DelModal">
+    </DelModal>
+    <!-- Modal元件 -->
   </div>
-  <!-- Modal元件 -->
-  <ProductModal
-    :product="tempProduct"
-    :isNew="isNew"
-    @update-product="updateProduct"
-    ref="productModal"
-  >
-  </ProductModal>
-  <DelModal :product="tempProduct" @del-product="deleteProduct" ref="DelModal">
-  </DelModal>
-  <!-- Modal元件 -->
 </template>
 
 <script>
 import ProductModal from '@/components/ProductModal.vue'
 import DelModal from '@/components/DelModal.vue'
 import swal from 'sweetalert'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
   data () {
@@ -83,24 +86,27 @@ export default {
         imagesUrl: []
       },
       isNew: false,
-      modal: ''
+      modal: '',
+      pagination: {}
     }
   },
   components: {
     ProductModal,
-    DelModal
+    DelModal,
+    Pagination
   },
   methods: {
-    getProducts () {
+    getProducts (page = 1) {
       this.isLoading = true
-      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products`
+      const url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`
       this.$http
         .get(url)
         .then(res => {
           if (res.data.success) {
             this.products = res.data.products
+            this.pagination = res.data.pagination
             this.isLoading = false
-            console.log(this.products)
+            console.log(res)
           } else {
             console.log(res.data.message)
           }
@@ -125,7 +131,8 @@ export default {
       const delComponent = this.$refs.DelModal
       delComponent.openModal()
     },
-    updateProduct (item) {
+    updateProduct (item, page) {
+      console.log(page)
       this.tempProduct = item
       const productComponent = this.$refs.productModal
       let url = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`
@@ -144,7 +151,7 @@ export default {
               timer: 1000
             })
             productComponent.closeModal()
-            this.getProducts()
+            this.getProducts(page.current_page)
           } else {
             console.log(res.data.message)
           }

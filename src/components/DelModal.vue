@@ -33,7 +33,7 @@
           >
             取消
           </button>
-          <button type="button" class="btn btn-danger" @click="deleteProduct">
+          <button type="button" class="btn btn-danger" @click="deleteItem">
             確認刪除
           </button>
         </div>
@@ -52,6 +52,12 @@ export default {
       default () {
         return {}
       }
+    },
+    order: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   data () {
@@ -60,8 +66,8 @@ export default {
     }
   },
   methods: {
-    deleteProduct () {
-      this.$emit('del-product')
+    deleteItem () {
+      this.$emit('del-item')
     },
     openModal () {
       this.modal.show()

@@ -43,10 +43,10 @@ export default {
         .post(url)
         .then(res => {
           if (res.data.success) {
-            console.log('login success')
             this.loginStatus = true
             this.$router.push('/admin/products')
           } else {
+            this.loginStatus = false
             swal({
               title: res.data.message,
               icon: 'error',
